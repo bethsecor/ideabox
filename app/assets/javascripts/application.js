@@ -13,3 +13,40 @@
 //= require jquery
 //= require jquery_ujs
 //= require_tree .
+
+$(document).ready(function() {
+  fetchIdeas()
+})
+
+function renderIdea(idea) {
+  $("#ideas-list").append(
+    "<div class='idea' data-id='"
+    + idea.id
+    + "'><h3>"
+    + idea.title
+    + "</h3><p>"
+    + idea.body
+    + "</p><p>Quality: "
+    + idea.quality
+    + "</p></div>"
+    )
+}
+
+function fetchIdeas() {
+  // var newestIdeaID = parseInt($(".idea").first().attr("data-id"))
+
+  $.ajax({
+    type:    "GET",
+    url:     "/api/v1/ideas.json",
+    success: function(ideas) {
+      $.each(ideas.reverse(), function(index, idea) {
+        // if (isNaN(newestIdeaID) || idea.id > newestIdeaID) {
+          renderIdea(idea)
+        // }
+      })
+    },
+    error: function(xhr) {
+      console.log(xhr.responseText)
+    }
+  })
+}
