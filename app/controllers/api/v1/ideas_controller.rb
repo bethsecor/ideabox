@@ -4,4 +4,8 @@ class Api::V1::IdeasController < Api::ApiController
   def index
     respond_with Idea.all
   end
+
+  def show
+    respond_with Idea.find(params[:id])
+  end
 end
