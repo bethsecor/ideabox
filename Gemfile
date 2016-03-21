@@ -35,7 +35,7 @@ gem 'active_model_serializers', github: 'rails-api/active_model_serializers'
 
 group :development, :test do
   gem 'pry'
-  gem 'rspec-rails', '~> 3.0'
+  gem 'rspec-rails'
   gem 'factory_girl'
   gem 'database_cleaner'
 end
