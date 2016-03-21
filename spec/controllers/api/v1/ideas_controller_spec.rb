@@ -34,4 +34,45 @@ RSpec.describe Api::V1::IdeasController, type: :controller do
     expect(idea['body']).to eq(idea_1.body)
     expect(idea['quality']).to eq(idea_1.quality)
   end
+
+  it "can create an idea" do
+    post :create, format: :json,
+                  idea: {
+                    title: "Super Awesome Idea",
+                    body: "Cotton candy flavored toothpaste",
+                    quality: "genius"
+                  }
+
+    expect(response.status).to eq 201
+
+    api_idea = JSON.parse(response.body)
+
+    expect(api_idea['title']).to eq "Super Awesome Idea"
+    expect(api_idea['body']).to eq "Cotton candy flavored toothpaste"
+    expect(api_idea['quality']).to eq "genius"
+  end
+
+  it "can update an idea" do
+    idea_1 = create(:idea)
+    put :update, id: idea_1.id, format: :json,
+                  idea: {
+                    title: "Super Awesome Idea",
+                    body: "Cotton candy flavored toothpaste",
+                    quality: "genius"
+                  }
+    expect(response.status).to eq 204
+
+    idea_1_updated = Idea.find(idea_1.id)
+
+    expect(idea_1_updated.title).to eq "Super Awesome Idea"
+    expect(idea_1_updated.body).to eq "Cotton candy flavored toothpaste"
+    expect(idea_1_updated.quality).to eq "genius"
+  end
+
+  it "can delete an idea" do
+    idea_1 = create(:idea)
+    delete :destroy, id: idea_1.id, format: :json
+
+    expect(response.status).to eq 204
+  end
 end
