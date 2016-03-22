@@ -18,6 +18,8 @@ $(document).ready(function() {
   fetchIdeas()
   createIdea()
   deleteIdea()
+  upQuality()
+  downQuality()
 })
 
 function truncateBody(body) {
@@ -36,9 +38,12 @@ function renderIdea(idea) {
     + idea.title
     + "</h3><p>"
     + truncateBody(idea.body)
-    + "</p><p>Quality: "
+    + "</p><p class='quality'>Quality: "
     + idea.quality
     + "</p>"
+    + "<button id='up-quality' name='button-up-quality' class='btn'>up</button>"
+    + "<button id='down-quality' name='button-down-quality' class='btn'>down</button>"
+    + "</br>"
     + "<button id='delete-idea' name='button-delete' class='btn'>Delete</button>"
     + "</div>"
     )
@@ -103,5 +108,76 @@ function deleteIdea() {
       }
     })
   })
+}
 
+function qualityUpped(quality) {
+  if (quality === "swill") {
+    return "plausible"
+  } else if (quality === "plausible"){
+    return "genius"
+  // } else if (quality === "genius"){
+  //   return "genius"
+  }
+}
+
+function upQuality() {
+  $("#ideas-list").delegate("#up-quality", 'click', function() {
+    var $idea = $(this).closest(".idea")
+    // console.log(qualityUpped($idea.find(".quality").html().split(": ")[1]))
+    // $("#ideas-list").children().first().find(".quality").html().split(": ")[1]
+    var quality = $idea.find(".quality").html().split(": ")[1]
+    if (quality !== "genius"){
+      var ideaQuality = {
+        idea: {
+          quality: qualityUpped(quality)
+        }
+      }
+
+      $.ajax({
+        type: "PUT",
+        url: "/api/v1/ideas/" + $idea.attr('data-id') + ".json",
+        data: ideaQuality,
+        success: function(updateIdea) {
+          $idea.find(".quality").text("Quality: " + ideaQuality['idea']['quality'])
+        },
+        error: function(xhr) {
+          console.log(xhr.responseText)
+        }
+      })
+    }
+  })
+}
+
+function qualityDowned(quality) {
+  if (quality === "genius") {
+    return "plausible"
+  } else if (quality === "plausible"){
+    return "swill"
+  }
+}
+
+function downQuality() {
+  $("#ideas-list").delegate("#down-quality", 'click', function() {
+    var $idea = $(this).closest(".idea")
+    var quality = $idea.find(".quality").html().split(": ")[1]
+    if (quality !== "swill"){
+      var ideaQuality = {
+        idea: {
+          quality: qualityDowned(quality)
+        }
+      }
+
+      $.ajax({
+        type: "PUT",
+        url: "/api/v1/ideas/" + $idea.attr('data-id') + ".json",
+        data: ideaQuality,
+        success: function(updateIdea) {
+          $idea.find(".quality").text("Quality: " + ideaQuality['idea']['quality'])
+        },
+        error: function(xhr) {
+          console.log(xhr.responseText)
+        }
+      })
+    }
+  })
 }
