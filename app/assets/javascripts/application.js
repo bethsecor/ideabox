@@ -16,6 +16,7 @@
 
 $(document).ready(function() {
   fetchIdeas()
+  createIdea()
 })
 
 function truncateBody(body) {
@@ -27,7 +28,7 @@ function truncateBody(body) {
 }
 
 function renderIdea(idea) {
-  $("#ideas-list").append(
+  $("#ideas-list").prepend(
     "<div class='idea' data-id='"
     + idea.id
     + "'><h3>"
@@ -47,7 +48,7 @@ function fetchIdeas() {
     type:    "GET",
     url:     "/api/v1/ideas.json",
     success: function(ideas) {
-      $.each(ideas.reverse(), function(index, idea) {
+      $.each(ideas, function(index, idea) {
         // if (isNaN(newestIdeaID) || idea.id > newestIdeaID) {
           renderIdea(idea)
         // }
@@ -56,5 +57,30 @@ function fetchIdeas() {
     error: function(xhr) {
       console.log(xhr.responseText)
     }
+  })
+}
+
+function createIdea() {
+  $("#create-idea").on("click", function() {
+    var ideaParams = {
+      idea: {
+        title: $("#idea-title").val(),
+        body: $("#idea-body").val()
+      }
+    }
+
+    $.ajax({
+      type:    "POST",
+      url:     "/api/v1/ideas.json",
+      data:    ideaParams,
+      success: function(newIdea) {
+        renderIdea(newIdea)
+      },
+      error: function(xhr) {
+        console.log(xhr.responseText)
+      }
+    })
+
+    $("input[type='text']").val("");
   })
 }
