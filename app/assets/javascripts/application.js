@@ -18,6 +18,14 @@ $(document).ready(function() {
   fetchIdeas()
 })
 
+function truncateBody(body) {
+  if (body.length > 100){
+    return body.substring(0, 100).split(" ").slice(0, -1).join(" ")
+  } else {
+    return body
+  }
+}
+
 function renderIdea(idea) {
   $("#ideas-list").append(
     "<div class='idea' data-id='"
@@ -25,7 +33,7 @@ function renderIdea(idea) {
     + "'><h3>"
     + idea.title
     + "</h3><p>"
-    + idea.body
+    + truncateBody(idea.body)
     + "</p><p>Quality: "
     + idea.quality
     + "</p></div>"
