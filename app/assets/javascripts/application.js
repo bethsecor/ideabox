@@ -17,6 +17,7 @@
 $(document).ready(function() {
   fetchIdeas()
   createIdea()
+  deleteIdea()
 })
 
 function truncateBody(body) {
@@ -37,7 +38,9 @@ function renderIdea(idea) {
     + truncateBody(idea.body)
     + "</p><p>Quality: "
     + idea.quality
-    + "</p></div>"
+    + "</p>"
+    + "<button id='delete-idea' name='button-delete' class='btn'>Delete</button>"
+    + "</div>"
     )
 }
 
@@ -83,4 +86,22 @@ function createIdea() {
 
     $("input[type='text']").val("");
   })
+}
+
+function deleteIdea() {
+  $("#ideas-list").delegate("#delete-idea", 'click', function() {
+    var $idea = $(this).closest(".idea")
+
+    $.ajax({
+      type: "DELETE",
+      url: "/api/v1/ideas/" + $idea.attr('data-id') + ".json",
+      success: function() {
+        $idea.remove()
+      },
+      error: function(xhr) {
+        console.log(xhr.responseText)
+      }
+    })
+  })
+
 }
