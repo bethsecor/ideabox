@@ -22,6 +22,7 @@ $(document).ready(function() {
   downQuality()
   editTitle()
   editBody()
+  search()
 })
 
 function truncateBody(body) {
@@ -36,6 +37,10 @@ function renderIdea(idea) {
   $("#ideas-list").prepend(
     "<div class='idea' data-id='"
     + idea.id
+    + "' data-title='"
+    + idea.title
+    + "' data-body='"
+    + truncateBody(idea.body)
     + "'><h3 id='edit-title' contenteditable='true'>"
     + idea.title
     + "</h3><p id='edit-body' contenteditable='true'>"
@@ -47,7 +52,7 @@ function renderIdea(idea) {
     + "<button id='down-quality' name='button-down-quality' class='btn'>thumbs down</button>"
     + "</br>"
     + "<button id='delete-idea' name='button-delete' class='btn'>Delete</button>"
-    + "</div><br>"
+    + "</div>"
     )
 }
 
@@ -240,5 +245,21 @@ function editBody() {
       document.execCommand('undo');
       $(this).blur();
     }
+  })
+}
+
+function search() {
+  $('#idea_filter').on('keyup', function(){
+    var searchIdea = this.value.toLowerCase()
+    $('.idea').each(function(index, idea) {
+      var $idea = $(idea);
+
+      if ($idea.data('title').toLowerCase().indexOf(searchIdea) >= 0 ||
+      $idea.data('body').toLowerCase().indexOf(searchIdea) >= 0) {
+        $idea.show();
+      } else {
+        $idea.hide();
+      }
+    })
   })
 }
