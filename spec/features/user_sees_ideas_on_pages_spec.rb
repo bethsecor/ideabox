@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.feature "UserSeesIdeasOnPages", type: :feature do
-  it "should see an existing idea on the page when visiting root", :js => true do
+  it "should see an existing idea on the page when visiting root", js: true do
     idea_1, idea_2 = create_list(:idea, 2)
     visit root_path
 
