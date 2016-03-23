@@ -7,6 +7,9 @@ require 'spec_helper'
 require 'rspec/rails'
 require 'database_cleaner'
 require 'factories'
+require 'capybara/rails'
+
+Capybara.javascript_driver = :selenium
 
 ActiveRecord::Migration.maintain_test_schema!
 
@@ -14,19 +17,21 @@ RSpec.configure do |config|
   config.fixture_path = "#{::Rails.root}/spec/fixtures"
 
 
-  config.use_transactional_fixtures = true
+  config.use_transactional_fixtures = false
 
   config.include FactoryGirl::Syntax::Methods
 
-  config.before(:suite) do
-    DatabaseCleaner.strategy = :transaction
-    DatabaseCleaner.clean_with(:truncation)
+  config.before :each do
+    if Capybara.current_driver == :rack_test
+      DatabaseCleaner.strategy = :transaction
+    else
+      DatabaseCleaner.strategy = :truncation
+    end
+    DatabaseCleaner.start
   end
 
-  config.around(:each) do |example|
-    DatabaseCleaner.cleaning do
-      example.run
-    end
+  config.after do
+    DatabaseCleaner.clean
   end
 
   config.infer_spec_type_from_file_location!

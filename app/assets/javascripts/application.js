@@ -35,7 +35,9 @@ function truncateBody(body) {
 
 function renderIdea(idea) {
   $("#ideas-list").prepend(
-    "<div class='idea' data-id='"
+    "<div class='idea' id='idea-"
+    + idea.id
+    + "' data-id='"
     + idea.id
     + "' data-title='"
     + idea.title
