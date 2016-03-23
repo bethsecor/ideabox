@@ -20,6 +20,8 @@ $(document).ready(function() {
   deleteIdea()
   upQuality()
   downQuality()
+  editTitle()
+  editBody()
 })
 
 function truncateBody(body) {
@@ -34,9 +36,9 @@ function renderIdea(idea) {
   $("#ideas-list").prepend(
     "<div class='idea' data-id='"
     + idea.id
-    + "'><h3>"
+    + "'><h3 id='edit-title' contenteditable='true'>"
     + idea.title
-    + "</h3><p>"
+    + "</h3><p id='edit-body' contenteditable='true'>"
     + truncateBody(idea.body)
     + "</p><p class='quality'>Quality: "
     + idea.quality
@@ -50,16 +52,12 @@ function renderIdea(idea) {
 }
 
 function fetchIdeas() {
-  // var newestIdeaID = parseInt($(".idea").first().attr("data-id"))
-
   $.ajax({
     type:    "GET",
     url:     "/api/v1/ideas.json",
     success: function(ideas) {
       $.each(ideas, function(index, idea) {
-        // if (isNaN(newestIdeaID) || idea.id > newestIdeaID) {
           renderIdea(idea)
-        // }
       })
     },
     error: function(xhr) {
@@ -115,17 +113,14 @@ function qualityUpped(quality) {
     return "plausible"
   } else if (quality === "plausible"){
     return "genius"
-  // } else if (quality === "genius"){
-  //   return "genius"
   }
 }
 
 function upQuality() {
   $("#ideas-list").delegate("#up-quality", 'click', function() {
     var $idea = $(this).closest(".idea")
-    // console.log(qualityUpped($idea.find(".quality").html().split(": ")[1]))
-    // $("#ideas-list").children().first().find(".quality").html().split(": ")[1]
     var quality = $idea.find(".quality").html().split(": ")[1]
+
     if (quality !== "genius"){
       var ideaQuality = {
         idea: {
@@ -178,6 +173,72 @@ function downQuality() {
           console.log(xhr.responseText)
         }
       })
+    }
+  })
+}
+
+function editTitle() {
+  $("#ideas-list").delegate("#edit-title", 'focusout keydown', function(){
+
+    var $idea = $(this).closest(".idea")
+
+    if (event.which == 0 || event.which == 13){
+
+      if (event.which == 13){
+        event.preventDefault();
+        $(this).blur();
+      }
+
+      var newIdeaTitle = { idea: { title: event.target.innerHTML } }
+
+      $.ajax({
+        type: "PUT",
+        url: "/api/v1/ideas/" + $idea.attr('data-id') + ".json",
+        data: newIdeaTitle,
+        success: function(updateIdea) {
+        },
+        error: function(xhr) {
+          document.execCommand('undo');
+          console.log(xhr.responseText)
+        }
+      })
+
+    } else if (event.keyCode == 27) {
+      document.execCommand('undo');
+      $(this).blur();
+    }
+  })
+}
+
+function editBody() {
+  $("#ideas-list").delegate("#edit-body", 'focusout keydown', function(){
+
+    var $idea = $(this).closest(".idea")
+
+    if (event.which == 0 || event.which == 13){
+
+      if (event.which == 13){
+        event.preventDefault();
+        $(this).blur();
+      }
+
+      var newIdeaBody = { idea: { body: event.target.innerHTML } }
+
+      $.ajax({
+        type: "PUT",
+        url: "/api/v1/ideas/" + $idea.attr('data-id') + ".json",
+        data: newIdeaBody,
+        success: function(updateIdea) {
+        },
+        error: function(xhr) {
+          document.execCommand('undo');
+          console.log(xhr.responseText)
+        }
+      })
+
+    } else if (event.keyCode == 27) {
+      document.execCommand('undo');
+      $(this).blur();
     }
   })
 }
