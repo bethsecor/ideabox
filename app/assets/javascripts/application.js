@@ -43,11 +43,11 @@ function renderIdea(idea) {
     + "</p><p class='quality'>Quality: "
     + idea.quality
     + "</p>"
-    + "<button id='up-quality' name='button-up-quality' class='btn'>up</button>"
-    + "<button id='down-quality' name='button-down-quality' class='btn'>down</button>"
+    + "<button id='up-quality' name='button-up-quality' class='btn'>thumbs up</button>"
+    + "<button id='down-quality' name='button-down-quality' class='btn'>thumbs down</button>"
     + "</br>"
     + "<button id='delete-idea' name='button-delete' class='btn'>Delete</button>"
-    + "</div>"
+    + "</div><br>"
     )
 }
 
