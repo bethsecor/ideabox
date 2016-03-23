@@ -36,8 +36,11 @@ gem 'active_model_serializers', github: 'rails-api/active_model_serializers'
 group :development, :test do
   gem 'pry'
   gem 'rspec-rails'
+  gem 'capybara'
+  gem 'launchy'
   gem 'factory_girl'
   gem 'database_cleaner'
+  gem 'selenium-webdriver'
 end
 
 group :development do
