@@ -41,6 +41,7 @@ group :development, :test do
   gem 'factory_girl'
   gem 'database_cleaner'
   gem 'selenium-webdriver'
+  gem 'simplecov'
 end
 
 group :development do
